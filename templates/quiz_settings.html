@@ -1,0 +1,13 @@
+<h2>Quiz Settings</h2>
+
+<form method="POST">
+    <label>Number of Questions per Student:</label>
+    <input type="number" name="num_questions" value="{{ num_questions }}" min="1">
+
+    <label>Time Limit (minutes, 0 = no limit):</label>
+    <input type="number" name="time_limit" value="{{ time_limit }}" min="0">
+
+    <button type="submit">Save Settings</button>
+</form>
+
+<p>Current settings: {{ num_questions }} questions, {{ time_limit }} min</p>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Responses</title>
+</head>
+<body>
+    <h1>📋 Student Responses</h1>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>Session ID</th>
+            <th>Student</th>
+            <th>Email</th>
+            <th>Question</th>
+            <th>Selected Option</th>
+            <th>Correct Option</th>
+            <th>Status</th>
+            <th>Started At</th>
+        </tr>
+        {% for r in responses %}
+        <tr>
+            <td>{{ r['session_id'] }}</td>
+            <td>{{ r['name'] }}</td>
+            <td>{{ r['email'] }}</td>
+            <td>{{ r['question_text'] }}</td>
+            <td>{{ r['selected_option'] }}</td>
+            <td>{{ r['correct_option'] }}</td>
+            <td>{% if r['is_correct'] %}✅{% else %}❌{% endif %}</td>
+            <td>{{ r['started_at'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('teacher_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

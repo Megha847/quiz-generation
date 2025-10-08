@@ -1,0 +1,34 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+.env
+.venv/
+instance/
+.DS_Store
+
+# --- Node.js / React ---
+node_modules/
+build/
+dist/
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.zip
+
+# --- System / Editor files ---
+.vscode/
+.idea/
+*.bak
+*.tmp
+Thumbs.db
+
+# --- Optional: if using frontend-backend folder structure ---
+frontend/node_modules/
+backend/__pycache__/

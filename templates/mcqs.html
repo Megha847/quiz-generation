@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated MCQs</title>
+</head>
+<body>
+    <h1>Generated MCQs</h1>
+    <ul>
+        {% for mcq in mcqs %}
+        <li>
+            <strong>{{ mcq.question_text }}</strong><br>
+            A. {{ mcq.option_a }}<br>
+            B. {{ mcq.option_b }}<br>
+            C. {{ mcq.option_c }}<br>
+            D. {{ mcq.option_d }}<br>
+            <em>Correct Answer: {{ mcq.correct_option }}</em>
+        </li>
+        <br>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Dashboard</a>
+</body>
+</html>

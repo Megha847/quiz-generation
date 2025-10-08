@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Teacher Dashboard</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+    <a href="{{ url_for('all_responses') }}">📖 View All Responses</a>
+</div>
+    <table>
+        <tr>
+            <th>Session ID</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Score</th>
+            <th>Started At</th>
+        </tr>
+        {% for s in sessions %}
+        <tr>
+            <!-- clickable session ID -->
+            <td><a href="{{ url_for('session_detail', session_id=s['session_id']) }}">{{ s['session_id'] }}</a></td>
+            <td>{{ s['name'] }}</td>
+            <td>{{ s['email'] }}</td>
+            <td>{{ s['correct_ans'] or 0 }}/{{ s['total_qs'] }}</td>
+            <td>{{ s['started_at'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
