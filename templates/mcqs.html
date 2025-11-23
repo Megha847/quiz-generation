@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Generated MCQs</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Generated MCQs</h1>
-    <ul>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6">Generated MCQs</h1>
+    <div class="space-y-4">
         {% for mcq in mcqs %}
-        <li>
-            <strong>{{ mcq.question_text }}</strong><br>
-            A. {{ mcq.option_a }}<br>
-            B. {{ mcq.option_b }}<br>
-            C. {{ mcq.option_c }}<br>
-            D. {{ mcq.option_d }}<br>
-            <em>Correct Answer: {{ mcq.correct_option }}</em>
-        </li>
-        <br>
+        <div class="bg-white p-4 rounded shadow">
+            <p class="font-semibold">{{ loop.index }}. {{ mcq.question }}</p>
+            {% for option in mcq.options %}
+            <p>- {{ option }}</p>
+            {% endfor %}
+            <p class="text-green-600 font-bold">Answer: {{ mcq.answer }}</p>
+        </div>
         {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Dashboard</a>
+    </div>
+    <p class="mt-6"><a href="{{ url_for('teacher_dashboard') }}" class="text-blue-500 hover:text-blue-700">Back to Dashboard</a></p>
 </body>
 </html>

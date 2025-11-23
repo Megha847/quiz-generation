@@ -1,13 +1,20 @@
-<h2>Quiz Settings</h2>
-
-<form method="POST">
-    <label>Number of Questions per Student:</label>
-    <input type="number" name="num_questions" value="{{ num_questions }}" min="1">
-
-    <label>Time Limit (minutes, 0 = no limit):</label>
-    <input type="number" name="time_limit" value="{{ time_limit }}" min="0">
-
-    <button type="submit">Save Settings</button>
-</form>
-
-<p>Current settings: {{ num_questions }} questions, {{ time_limit }} min</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-96">
+        <h2 class="text-2xl font-bold mb-6 text-center">Quiz Settings</h2>
+        <form method="POST" action="{{ url_for('quiz_settings') }}" class="flex flex-col gap-4">
+            <input type="text" name="quiz_title" placeholder="Quiz Title" class="border p-2 rounded" required>
+            <input type="number" name="duration" placeholder="Duration (minutes)" class="border p-2 rounded" required>
+            <input type="number" name="max_attempts" placeholder="Max Attempts" class="border p-2 rounded" required>
+            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded">Save Settings</button>
+        </form>
+        <p class="text-center mt-4"><a href="{{ url_for('teacher_dashboard') }}" class="text-gray-500 hover:text-gray-700">Back to Dashboard</a></p>
+    </div>
+</body>
+</html>

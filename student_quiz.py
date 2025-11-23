@@ -1,83 +1,42 @@
 import sqlite3
-import random
 
-DB_NAME = "quiz.db"
+DB_PATH = "quiz.db"
 
-# ---------------- DB Helper ----------------
-def get_connection():
-    return sqlite3.connect(DB_NAME)
+def submit_quiz(student_email, answers):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
 
-# ---------------- Fetch Quiz Settings ----------------
-def get_quiz_settings():
-    conn = get_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute("SELECT num_questions FROM quiz_settings ORDER BY id DESC LIMIT 1")
-        setting = cursor.fetchone()
-        if setting:
-            return setting[0]
-    except sqlite3.OperationalError:
-        # If table doesn't exist, return default
-        return 5
-    finally:
+    # Get student id
+    cur.execute("SELECT id FROM students WHERE email=?", (student_email,))
+    student = cur.fetchone()
+    if not student:
         conn.close()
-    return 5
+        return "Student not found"
+    student_id = student[0]
 
-# ---------------- Fetch Random Questions ----------------
-def fetch_random_questions(num_questions):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT question_id, question_text, option_a, option_b, option_c, option_d, correct_option FROM questions")
-    all_questions = cursor.fetchall()
-    conn.close()
-    if not all_questions:
-        print("⚠️ No questions available in DB.")
-        return []
-    return random.sample(all_questions, min(num_questions, len(all_questions)))
+    total_questions = len(answers)
+    correct_count = 0
 
-# ---------------- Store Result ----------------
-def store_result(student_name, qid, selected_option, is_correct):
-    conn = get_connection()
-    cursor = conn.cursor()
-    # Create results table if not exist
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS results (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            student_name TEXT,
-            question_id INTEGER,
-            selected_option TEXT,
-            is_correct INTEGER
-        )
-    """)
-    cursor.execute("INSERT INTO results (student_name, question_id, selected_option, is_correct) VALUES (?, ?, ?, ?)",
-                   (student_name, qid, selected_option, is_correct))
+    # Create session
+    cur.execute("INSERT INTO sessions (student_id, total_qs, correct_ans) VALUES (?, ?, ?)",
+                (student_id, total_questions, 0))
+    session_id = cur.lastrowid
+
+    # Save responses
+    for qid, chosen in answers.items():
+        cur.execute("SELECT correct_option FROM questions WHERE id=?", (qid,))
+        correct_option = cur.fetchone()[0]
+        is_correct = int(chosen == correct_option)
+        correct_count += is_correct
+
+        cur.execute("""
+            INSERT INTO responses (session_id, question_id, chosen_option, is_correct)
+            VALUES (?, ?, ?, ?)
+        """, (session_id, qid, chosen, is_correct))
+
+    # Update correct answers in session
+    cur.execute("UPDATE sessions SET correct_ans=? WHERE id=?", (correct_count, session_id))
     conn.commit()
     conn.close()
 
-# ---------------- Run Quiz ----------------
-def start_quiz():
-    student_name = input("Enter your name: ").strip()
-    num_questions = get_quiz_settings()
-    questions = fetch_random_questions(num_questions)
-    if not questions:
-        return
-
-    score = 0
-    for idx, q in enumerate(questions, start=1):
-        qid, text, a, b, c, d, correct = q
-        print(f"\nQ{idx}: {text}")
-        print(f"A) {a}\nB) {b}\nC) {c}\nD) {d}")
-        answer = input("Your answer (A/B/C/D): ").strip().upper()
-        is_correct = 1 if answer == correct else 0
-        if is_correct:
-            score += 1
-            print("✅ Correct!")
-        else:
-            print(f"❌ Wrong! Correct answer: {correct}")
-        store_result(student_name, qid, answer, is_correct)
-
-    print(f"\n🎉 Quiz completed! Your score: {score}/{len(questions)}")
-
-# ---------------- Main ----------------
-if __name__ == "__main__":
-    start_quiz()
+    return {"total": total_questions, "correct": correct_count}

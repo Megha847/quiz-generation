@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html>
-<head><title>Set Questions</title></head>
-<body>
-  <h2>Set Number of Questions</h2>
-  <form method="post">
-    <input type="number" name="num_questions" value="5" min="1">
-    <button type="submit">Save</button>
-  </form>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Questions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6">Set Questions</h1>
+    <form method="POST" action="{{ url_for('set_questions') }}" class="space-y-4">
+        {% for i in range(1, total_questions+1) %}
+        <div class="bg-white p-4 rounded shadow">
+            <label class="block font-semibold mb-1">Question {{ i }}</label>
+            <input type="text" name="question_{{ i }}" class="border p-2 rounded w-full" placeholder="Enter question" required>
+            <label class="block font-semibold mt-2 mb-1">Options (comma separated)</label>
+            <input type="text" name="options_{{ i }}" class="border p-2 rounded w-full" placeholder="Option1, Option2, Option3, Option4" required>
+            <label class="block font-semibold mt-2 mb-1">Correct Answer</label>
+            <input type="text" name="answer_{{ i }}" class="border p-2 rounded w-full" placeholder="Correct answer" required>
+        </div>
+        {% endfor %}
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">Save Questions</button>
+    </form>
+    <p class="mt-6"><a href="{{ url_for('teacher_dashboard') }}" class="text-blue-500 hover:text-blue-700">Back to Dashboard</a></p>
 </body>
 </html>

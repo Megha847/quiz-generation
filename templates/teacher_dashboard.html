@@ -2,31 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>👩‍🏫 Teacher Dashboard</h1>
-    <h2>Students</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        {% for student in students %}
-        <tr>
-            <td>{{ student['student_id'] }}</td>
-            <td>{{ student['name'] }}</td>
-            <td>{{ student['email'] }}</td>
-            <td>
-                <a href="{{ url_for('student_responses', student_id=student['student_id']) }}">View Responses</a> |
-                <a href="{{ url_for('reset_attempt', student_id=student['student_id']) }}">Reset Attempts</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="{{ url_for('index') }}">Back to Home</a>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-4">Welcome, {{ teacher.name }}</h1>
+    <a href="{{ url_for('upload_material', teacher_email=teacher.email) }}" class="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded mb-6 inline-block">Upload Material</a>
+
+    <h2 class="text-2xl font-bold mt-6 mb-2">Generated MCQs</h2>
+    {% if mcqs %}
+        <ul class="list-disc ml-6">
+            {% for q in mcqs %}
+                <li>{{ q }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No MCQs generated yet.</p>
+    {% endif %}
 </body>
 </html>

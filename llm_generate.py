@@ -1,36 +1,42 @@
+# llm_generate.py
+import cohere
 import os
 from dotenv import load_dotenv
-import cohere
 
-# Load API key from .env
+# Load .env if exists
 load_dotenv()
-COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 
-def generate_mcqs_from_text(text, num_questions=5):
-    """Generate MCQs from text using latest Cohere Chat API"""
-    if not COHERE_API_KEY:
-        print("⚠️ COHERE_API_KEY not found in .env file.")
-        return []
+def generate_mcqs_from_text(text, api_key=None):
+    """
+    Generate MCQs from input text using Cohere Chat API v2.
+    API key can be passed explicitly or read from .env.
+    """
+    if api_key is None:
+        api_key = os.getenv("COHERE_API_KEY")
+    if not api_key:
+        raise ValueError("Cohere API key is missing!")
 
-    try:
-        co = cohere.Client(COHERE_API_KEY)
-        print("✨ Generating MCQs using Cohere (command-r-latest)... please wait.\n")
+    co = cohere.ClientV2(api_key)
 
-        response = co.chat(
-    model="command-a",
-    message=f"Generate {num_questions} multiple-choice questions (MCQs) with 4 options and correct answers from this text:\n{text}"
-)
+    prompt = f"""
+    Generate 5 multiple-choice questions with options (A-D) and answers 
+    from the following text. Format each question as:
+    Q1: ...
+    A. ...
+    B. ...
+    C. ...
+    D. ...
+    Answer: ...
+    Text:
+    {text}
+    """
 
-        print("✅ Response received from Cohere.\n")
-        return response.text
+    response = co.chat(
+        model="command-a-03-2025",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
 
-    except Exception as e:
-        print(f"⚠️ Error generating MCQs: {e}")
-        return []
-
-if __name__ == "__main__":
-    user_text = input("Enter some text to generate MCQs from:\n")
-    mcqs = generate_mcqs_from_text(user_text, num_questions=5)
-
-    print("\nGenerated MCQs:\n")
-    print(mcqs if mcqs else "No MCQs generated.")
+    mcqs_text = response.message.content[0].text
+    mcqs = [line.strip() for line in mcqs_text.split("\n") if line.strip()]
+    return mcqs

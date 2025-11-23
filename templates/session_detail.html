@@ -1,56 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Session {{ session_id }} Details</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background: #f2f2f2;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Session Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>📖 Quiz Session {{ session_id }} Details</h1>
-    <h2>Student: {{ student_name }} ({{ student_email }})</h2>
-    <h2>Score: {{ correct_ans }}/{{ total_qs }}</h2>
-
-    <table>
-        <tr>
-            <th>Question</th>
-            <th>Selected Option</th>
-            <th>Correct Option</th>
-            <th>Status</th>
-        </tr>
-        {% for r in responses %}
-        <tr>
-            <td>{{ r['question_text'] }}</td>
-            <td>{{ r['selected_option'] }}</td>
-            <td>{{ r['correct_option'] }}</td>
-            <td>
-                {% if r['is_correct'] == 1 %}
-                    ✅ Correct
-                {% else %}
-                    ❌ Wrong
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6">Session Details</h1>
+    <table class="min-w-full bg-white rounded shadow overflow-hidden">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="py-2 px-4">Student</th>
+                <th class="py-2 px-4">Score</th>
+                <th class="py-2 px-4">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr class="border-b">
+                <td class="py-2 px-4">{{ session.student_name }}</td>
+                <td class="py-2 px-4">{{ session.score }}</td>
+                <td class="py-2 px-4">{{ session.completed_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-
-    <div style="text-align:center; margin-top:20px;">
-        <a href="{{ url_for('teacher_dashboard') }}">⬅ Back to Dashboard</a>
-    </div>
+    <p class="mt-6"><a href="{{ url_for('teacher_dashboard') }}" class="text-blue-500 hover:text-blue-700">Back to Dashboard</a></p>
 </body>
 </html>

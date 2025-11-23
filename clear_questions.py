@@ -1,12 +1,8 @@
-import sqlite3
+from db import get_connection
 
-conn = sqlite3.connect("quiz.db")
-cursor = conn.cursor()
-
-# Delete all existing questions
-cursor.execute("DELETE FROM questions")
-
-conn.commit()
-conn.close()
-
-print("✅ Old questions cleared from the database!")
+def clear_questions_table():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM questions")
+    conn.commit()
+    conn.close()
